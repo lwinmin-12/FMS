@@ -17,18 +17,11 @@ import blinkLed, { lowLed } from "./connection/ledBlink";
 import { rp, stationIdSet } from "./migrations/migrator";
 import { getLastPrice } from "./service/dailyPrice.service";
 import { cleanAll, get, mqttEmitter, set } from "./utils/helper";
-import autoPermitRoute from "./router/autoPermit.routes";
 import {
-  autoPermitAdd,
-  autoPermitGet,
-  autoPermitUpdate,
-} from "./service/autoPermit.service";
-import {
-  apController,
-  apFinalDropController,
-  apPPController,
-  approvDropController,
-} from "./connection/apControl";
+  systemStatusAdd,
+  systemStatusUpdate,
+} from "./service/systemStatus.service";
+import customerRoute from "./router/customer.routes";
 
 const app = express();
 app.use(fileUpload());
@@ -43,15 +36,6 @@ client.on("message", async (topic, message) => {
 
   console.log(data, message.toString());
 
-  if (data[2] == "permit") {
-    // when permit topic come
-    apController(data[3], message.toString().substring(0, 2)); // auto permit approv
-  }
-
-  if (data[2] == "req") {
-    approvDropController(message.toString().substring(0, 2));
-  }
-
   if (data[2] == "active") {
     // when active topic come
     // blinkLed(Number(data[3]));                                      // for blink led
@@ -60,17 +44,12 @@ client.on("message", async (topic, message) => {
   if (data[2] == "Final") {
     // when final topic come
     console.log(topic, message);
-    // let mode = await get("mode");
     detailSaleUpdateByDevice(data[3], message.toString()); // add final data to detail sale vocono
-    await apFinalDropController(data[3], message.toString());
   }
 
   if (data[2] == "livedata") {
     // pp data come
-    let mode = await get("mode"); //get device mode from redis
     liveDataChangeHandler(message.toString()); // store in cache
-    if (mode == "allow")
-      await apPPController(data[3], message.toString().substring(0, 2)); // delete approv in redis
   }
 
   if (data[2] == "pricereq") {
@@ -96,7 +75,7 @@ socket.on("connect", async () => {
   if (!stationId) {
     await stationIdSet();
     stationId = await get("stationId");
-    console.log(stationId);
+    // console.log(stationId);
   }
   // Send data to the Raspberry Pi server
   socket.emit("checkMode", stationId);
@@ -104,7 +83,7 @@ socket.on("connect", async () => {
   console.log(stationId);
 
   socket.on(stationId, async (data) => {
-    let result = await autoPermitUpdate(data.mode);
+    let result = await systemStatusUpdate(data.mode);
     await set("mode", data.mode);
   });
 });
@@ -127,7 +106,9 @@ app.use("/api/device-connection", localToDeviceRoute); // device and local serve
 app.use("/api/device", deviceRoute); // device info route
 app.use("/api/daily-report", dailyReportRoute); // sum of daily price route
 app.use("/api/daily-price", dailyPriceRoute); // daily price route
-app.use("/api/auto-permit", autoPermitRoute); // auto permission route
+// app.use("/api/auto-permit", autoPermitRoute); // auto permission route
+
+app.use("/api/customer", customerRoute);
 
 // error handling and response
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
@@ -145,7 +126,7 @@ const defaultData = async () => {
 
   await rp(); //user migration
   await cleanAll();
-  autoPermitAdd();
+  systemStatusAdd();
 };
 
 defaultData();

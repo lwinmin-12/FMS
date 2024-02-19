@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { getDailyReportByDate } from "../service/dailyReport.service";
 import moment from "moment-timezone";
 
 export interface detailSaleDocument extends mongoose.Document {
@@ -48,7 +47,7 @@ const detailSaleSchema = new Schema({
   asyncAlready: {
     type: String,
     default: "0",
-    enum: ["0", "1","a0","a","2" ],
+    enum: ["0", "1", "a0", "a", "2"],
   },
 
   salePrice: { type: Number, default: 0 },
@@ -62,13 +61,13 @@ const detailSaleSchema = new Schema({
     type: String,
     default: new Date().toLocaleDateString("fr-CA"),
   },
-  isError: { type: String, default: "0", enum: ["0","AU","A", "R", "E"] },
+  isError: { type: String, default: "0", enum: ["0", "R", "E"] },
   // 0 = manual permited
   // AU = auto permited
   // A = final completed process
   // R = reload error
   // "E" = Error cash update
-  
+
   preset: { type: String, default: null },
   device: { type: String, required: true },
   createAt: { type: Date, default: Date.now },
@@ -78,8 +77,6 @@ detailSaleSchema.pre("save", function (next) {
   if (this.vehicleType == "Cycle" && this.carNo == null) {
     this.carNo = "-";
   }
-  // const options = { timeZone: "Asia/Yangon", hour12: false };
-
   const currentDate = moment().tz("Asia/Yangon").format("YYYY-MM-DD");
 
   if (this.dailyReportDate) {

@@ -12,10 +12,14 @@ import {
   preSetDetailSale,
   initialDetail,
   updateDetailSaleByAp,
+  getLastDetailSaleData,
   // detailSaleByDate,
 } from "../service/detailSale.service";
 
 import { deviceLiveData } from "../connection/liveTimeData";
+import { getCustomerByCardId } from "../service/customer.service";
+import { customerDocument } from "../model/customer.model";
+import { error } from "console";
 
 export const getDetailSaleHandler = async (
   req: Request,
@@ -106,6 +110,8 @@ export const addDetailSaleHandler = async (
     if (!depNo || !nozzleNo) {
       throw new Error("you need pumpNo or message");
     }
+
+    // if()
     // that is save in data base
     let result = await addDetailSale(depNo, nozzleNo, req.body);
 
@@ -252,11 +258,47 @@ export const updateDetailSaleByApHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  try{
-    let result = await updateDetailSaleByAp(req.query._id , req.body )
+  try {
+    let result = await updateDetailSaleByAp(req.query._id, req.body);
 
-    fMsg(res , 'updated successfully' ,result )
-  }catch(e){
-    next(e)
+    fMsg(res, "updated successfully", result);
+  } catch (e) {
+    next(e);
   }
-}
+};
+
+//card attach controller
+
+export const detailSaleUpdateByCard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const cardId = req.query.cardId as string;
+    const nozzleNo = req.query.nozzleNo as string;
+    if (!cardId) throw new Error("invalid card");
+
+    let customerData = await getCustomerByCardId(cardId);
+
+    if (customerData == null) {
+      // here we must add the logic for cloud data get
+      // let cardDataFromCloud;
+      // if (!cardDataFromCloud) throw new Error("invalid card");
+      throw new Error("invalid card");
+    }
+
+    let lastData = await getLastDetailSaleData(nozzleNo);
+    if (!lastData) throw new Error("Internal Error");
+
+    lastData.vehicleType = customerData.cusVehicleType;
+    lastData.carNo = customerData.cusCarNo;
+    console.log(lastData);
+
+    let result = await updateDetailSale({ _id: lastData._id }, lastData);
+
+    fMsg(res, "card attched sussful");
+  } catch (e) {
+    next(e);
+  }
+};

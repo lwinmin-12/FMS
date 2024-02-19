@@ -1,15 +1,15 @@
-import {
-  autoPermitAddHandler,
-  autoPermitGetHandler,
-  autoPermitUpdateHandler,
-} from "../controller/autoPermit.controller";
+// import {
+//   autoPermitAddHandler,
+//   autoPermitGetHandler,
+//   autoPermitUpdateHandler,
+// } from "../controller/autoPermit.controller";
 
-const autoPermitRoute = require("express").Router();
+// const autoPermitRoute = require("express").Router();
 
-autoPermitRoute.get("/", autoPermitGetHandler);
+// autoPermitRoute.get("/", autoPermitGetHandler);
 
-autoPermitRoute.post("/", autoPermitAddHandler);
+// autoPermitRoute.post("/", autoPermitAddHandler);
 
-autoPermitRoute.patch("/", autoPermitUpdateHandler);
+// autoPermitRoute.patch("/", autoPermitUpdateHandler);
 
-export default autoPermitRoute;
+// export default autoPermitRoute;

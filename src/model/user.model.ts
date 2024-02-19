@@ -24,15 +24,19 @@ export interface UserDocument extends UserInput, mongoose.Document {
 
 const userSchema = new Schema(
   {
+    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phone: { type: Number, required: true, unique: true },
     stationId: { type: String, required: true },
     stationNo: { type: Number, required: true },
     cardId: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
     password: { type: String, required: true },
     roles: [{ type: Schema.Types.ObjectId, ref: "role" }],
     permits: [{ type: Schema.Types.ObjectId, ref: "permit" }],
+    positon: { type: String, default: null }, // position of the user
+    address: { type: String, default: null }, // address of the address
+    nrcNo: { type: String, required: true },
+    status: { type: String, default: "enable", enum: ["enable", "disable"] },
   },
   {
     timestamps: true,

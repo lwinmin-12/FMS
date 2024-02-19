@@ -9,6 +9,7 @@ import {
 } from "../middleware/validator";
 
 import {
+  cardAuthHandler,
   deleteUserHandler,
   getUserByAdminHandler,
   getUserHandler,
@@ -22,6 +23,7 @@ import {
 } from "../controller/user.controller";
 
 import {
+  cardIdSchema,
   createUserSchema,
   loginUserSchema,
   userPermitSchema,
@@ -33,6 +35,8 @@ userRoute.post("/register", validateAll(createUserSchema), registerUserHandler);
 
 //login user
 userRoute.post("/login", validateAll(loginUserSchema), loginUserHandler);
+
+userRoute.post("/cardAuth", validateAll(cardIdSchema), cardAuthHandler);
 
 //update
 userRoute.patch(

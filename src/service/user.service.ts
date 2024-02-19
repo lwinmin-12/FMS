@@ -40,6 +40,17 @@ export const loginUser = async ({
   return userObj;
 };
 
+export const cardAuth = async (cardId: string): Promise<{ token: string }> => {
+  let user = await userModel.findOne({ cardId });
+  if (!user) throw new Error("Not a valid card");
+  let userObj: Partial<UserDocument> = user.toObject();
+  delete userObj.password;
+  set("stationNo", userObj.stationNo);
+  set("stationId", userObj.stationId);
+  const userToken = createToken(userObj);
+  return { token: userToken };
+};
+
 export const getUser = async (query: FilterQuery<UserDocument>) => {
   try {
     return await userModel

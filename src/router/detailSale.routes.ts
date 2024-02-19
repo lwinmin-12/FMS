@@ -1,6 +1,7 @@
 import {
   addDetailSaleHandler,
   deleteDetailSaleHandler,
+  detailSaleUpdateByCard,
   detailSaleUpdateErrorHandler,
   getDetailSaleByDateHandler,
   getDetailSaleDatePagiHandler,
@@ -102,5 +103,7 @@ detailSaleRoute.post(
   validateAll(apSchema),
   updateDetailSaleByApHandler
 );
+
+detailSaleRoute.patch("/customer_card", detailSaleUpdateByCard);
 
 export default detailSaleRoute;

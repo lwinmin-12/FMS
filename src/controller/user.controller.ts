@@ -4,6 +4,7 @@ import fMsg, { get } from "../utils/helper";
 import { getPermit } from "../service/permit.service";
 import { getRole } from "../service/role.service";
 import {
+  cardAuth,
   deleteUser,
   getUser,
   loginUser,
@@ -27,7 +28,7 @@ export const registerUserHandler = async (
     let result = await registerUser(req.body);
     fMsg(res, "user registered", result);
   } catch (e) {
-    next(new Error(e));
+    next(e);
   }
 };
 
@@ -42,6 +43,23 @@ export const loginUserHandler = async (
 
     let result = await loginUser(req.body);
     fMsg(res, "logined users", result);
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const cardAuthHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let mode = await get("mode");
+    if (mode == "dead") throw new Error("Your are out of service");
+    
+    let cardId = req.body.cardId;
+    const result = await cardAuth(cardId);
+    fMsg(res, "succes", result);
   } catch (e) {
     next(e);
   }

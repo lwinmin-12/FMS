@@ -3,7 +3,7 @@ import detailSaleModel, { detailSaleDocument } from "../model/detailSale.model";
 import config from "config";
 import { UserDocument } from "../model/user.model";
 import moment from "moment-timezone";
-import { get, mqttEmitter, previous } from "../utils/helper";
+import { get, mqttEmitter, previous, set } from "../utils/helper";
 import axios from "axios";
 
 import { deviceLiveData } from "../connection/liveTimeData";
@@ -124,7 +124,6 @@ export const addDetailSale = async (
   body: Data
 ) => {
   try {
-    console.log(body)
     //for time
     const currentDate = moment().tz("Asia/Yangon").format("YYYY-MM-DD");
     const cuurentDateForVocono = moment().tz("Asia/Yangon").format("DDMMYYYY");
@@ -142,9 +141,14 @@ export const addDetailSale = async (
     let iso: Date = new Date(`${currentDate}T${currentDateTime}.000Z`);
 
     // get today count
-    const count = await detailSaleModel.countDocuments({
-      dailyReportDate: currentDate,
-    });
+    let rdsCount: number = await get(currentDate);
+    if (!rdsCount) {
+      rdsCount = await detailSaleModel.countDocuments({
+        dailyReportDate: currentDate,
+      });
+    }
+
+    let newCount = rdsCount + 1;
 
     const lastDocument = await detailSaleModel
       .findOne({ nozzleNo: body.nozzleNo })
@@ -152,9 +156,7 @@ export const addDetailSale = async (
 
     body = {
       ...body,
-      vocono: `${body.user.stationNo}/${
-        body.user.name
-      }/${cuurentDateForVocono}/${count + 1}`,
+      vocono: `${body.user.stationNo}/${body.user.name}/${cuurentDateForVocono}/${newCount}`,
       stationDetailId: body.user.stationId,
       casherCode: body.user.name,
       asyncAlready: "0",
@@ -162,7 +164,6 @@ export const addDetailSale = async (
       totalizer_amount: lastDocument?.totalizer_amount,
       createAt: iso,
     };
-
 
     let result = await new detailSaleModel(body).save();
 
@@ -190,16 +191,12 @@ export const updateDetailSale = async (
   query: FilterQuery<detailSaleDocument>,
   body: UpdateQuery<detailSaleDocument>
 ) => {
-  try {
-    let data = await detailSaleModel.findOne(query);
-    if (!data) throw new Error("no data with that id");
+  let data = await detailSaleModel.findOne(query);
+  if (!data) throw new Error("no data with that id");
 
-    await detailSaleModel.updateMany(query, body);
+  await detailSaleModel.updateMany(query, body);
 
-    return await detailSaleModel.findById(data._id).lean();
-  } catch (e) {
-    throw new Error(e);
-  }
+  return await detailSaleModel.findById(data._id).lean();
 };
 
 export const detailSaleUpdateError = async (
@@ -521,7 +518,7 @@ export const addDetailSaleByAp = async (depNo: string, nozzleNo: string) => {
 
     return result;
   } catch (e) {
-    console.log('e in service')
+    console.log("e in service");
     throw new Error(e);
   }
 };
@@ -591,4 +588,15 @@ export const updateDetailSaleByAp = async (
       }
     }
   }
+};
+
+// customer card updated for carNo and vehicle
+export const updateDetailSaleByCusCard = async () => {};
+
+export const getLastDetailSaleData = async (
+  nozzleNo: string
+): Promise<detailSaleDocument | null> => {
+  return await detailSaleModel
+    .findOne({ nozzleNo })
+    .sort({ _id: -1, createAt: -1 });
 };

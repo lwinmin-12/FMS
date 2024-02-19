@@ -78,6 +78,9 @@ export const createUserSchema = object({
     cardId: string({
       required_error: "cardId is required",
     }),
+    nrcNo: string({
+      required_error: "NRC No is required",
+    }),
     email: string({
       required_error: "Email is required",
     }),
@@ -95,6 +98,14 @@ export const loginUserSchema = object({
     password: string({
       required_error: "Password is required",
     }).min(4, "password is too short"),
+  }),
+});
+
+export const cardIdSchema = object({
+  body: object({
+    cardId: string({
+      required_error: "card id is required",
+    }),
   }),
 });
 

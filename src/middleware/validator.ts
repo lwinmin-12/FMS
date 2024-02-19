@@ -12,7 +12,6 @@ export const validateAll =
       });
       return next();
     } catch (e: any) {
-      console.log(e);
       return next(new Error(e.errors[0].message));
     }
   };
@@ -39,7 +38,7 @@ export const validateToken = async (
     req.body.user = user;
     next();
   } catch (e) {
-    next(e)
+    next(e);
   }
 };
 export const validateToken2 = async (
