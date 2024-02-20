@@ -13,13 +13,13 @@ import {
   initialDetail,
   updateDetailSaleByAp,
   getLastDetailSaleData,
+  detailSaleStatement,
   // detailSaleByDate,
 } from "../service/detailSale.service";
 
 import { deviceLiveData } from "../connection/liveTimeData";
 import { getCustomerByCardId } from "../service/customer.service";
 import { customerDocument } from "../model/customer.model";
-import { error } from "console";
 
 export const getDetailSaleHandler = async (
   req: Request,
@@ -293,7 +293,7 @@ export const detailSaleUpdateByCard = async (
 
     lastData.vehicleType = customerData.cusVehicleType;
     lastData.carNo = customerData.cusCarNo;
-    console.log(lastData);
+    // console.log(lastData);
 
     let result = await updateDetailSale({ _id: lastData._id }, lastData);
 
@@ -301,4 +301,19 @@ export const detailSaleUpdateByCard = async (
   } catch (e) {
     next(e);
   }
+};
+
+//statement
+
+export const detailSaleStatementHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const reqDate = req.query.reqDate as string;
+  if (!reqDate) throw new Error("You need date");
+
+  let result = await detailSaleStatement(reqDate);
+
+  fMsg(res, "statement report", result);
 };

@@ -1,6 +1,7 @@
 import {
   addDetailSaleHandler,
   deleteDetailSaleHandler,
+  detailSaleStatementHandler,
   detailSaleUpdateByCard,
   detailSaleUpdateErrorHandler,
   getDetailSaleByDateHandler,
@@ -104,6 +105,8 @@ detailSaleRoute.post(
   updateDetailSaleByApHandler
 );
 
+//new fms update
+detailSaleRoute.get("/total_statement", detailSaleStatementHandler);
 detailSaleRoute.patch("/customer_card", detailSaleUpdateByCard);
 
 export default detailSaleRoute;

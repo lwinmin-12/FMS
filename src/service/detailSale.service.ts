@@ -600,3 +600,37 @@ export const getLastDetailSaleData = async (
     .findOne({ nozzleNo })
     .sort({ _id: -1, createAt: -1 });
 };
+
+export const detailSaleStatement = async (reqDate: string) => {
+  const fuelTypes = [
+    "001-Octane Ron(92)",
+    "002-Octane Ron(95)",
+    "004-Diesel",
+    "005-Premium Diesel",
+  ];
+
+  const fuelTypeTotalArray = await Promise.all(
+    fuelTypes.map(async (fuelType) => {
+      return await detailSaleModel
+        .aggregate([
+          {
+            $match: {
+              fuelType: fuelType,
+              dailyReportDate: reqDate,
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              fuelType: { $first: "$fuelType" },
+              saleLiter: { $sum: "$saleLiter" },
+              totalPrice: { $sum: "$totalPrice" },
+            },
+          },
+        ])
+        .exec();
+    })
+  );
+
+  return fuelTypeTotalArray.flat();
+};

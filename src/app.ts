@@ -22,6 +22,7 @@ import {
   systemStatusUpdate,
 } from "./service/systemStatus.service";
 import customerRoute from "./router/customer.routes";
+import totalStatementRoute from "./router/totalStatement.routes";
 
 const app = express();
 app.use(fileUpload());
@@ -109,6 +110,7 @@ app.use("/api/daily-price", dailyPriceRoute); // daily price route
 // app.use("/api/auto-permit", autoPermitRoute); // auto permission route
 
 app.use("/api/customer", customerRoute);
+app.use("/api/total-statement", totalStatementRoute);
 
 // error handling and response
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
