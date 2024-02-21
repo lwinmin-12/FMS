@@ -52,7 +52,7 @@ export const preSetDetailSaleHandler = async (
     let preSetLiter = req.body.liter?.toString();
 
     delete req.body.kyat;
-    delete req.body.kyat;
+    delete req.body.liter;
 
     if ((preSetKyat && preSetLiter) || (!preSetKyat && !preSetLiter))
       throw new Error("you can set one");

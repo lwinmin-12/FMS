@@ -58,9 +58,25 @@ export const preSetDetailSale = async (
 
   let iso: Date = new Date(`${currentDate}T${currentDateTime}.000Z`);
 
-  const count = await detailSaleModel.countDocuments({
-    dailyReportDate: currentDate,
-  });
+  let rdsCount: number = await get(currentDate);
+  if (!rdsCount) {
+    rdsCount = await detailSaleModel.countDocuments({
+      dailyReportDate: currentDate,
+    });
+  }
+
+  let newCount = rdsCount + 1;
+
+  await set(currentDate, newCount);
+
+  let stationNo = await get("stationNo");
+  let stationId = await get("stationId");
+
+  if (!stationId || !stationNo) {
+    const user = await getUser({});
+    stationNo = user[0].stationNo;
+    stationId = user[0].stationId;
+  }
 
   const lastDocument = await detailSaleModel
     .findOne({ nozzleNo: body.nozzleNo })
@@ -68,9 +84,7 @@ export const preSetDetailSale = async (
 
   body = {
     ...body,
-    vocono: `${body.user[0].stationNo}/${
-      body.user[0].name
-    }/${cuurentDateForVocono}/${count + 1}`,
+    vocono: `${stationNo}/${body.user[0].name}/${cuurentDateForVocono}/${newCount}`,
     stationDetailId: body.user[0].stationId,
     casherCode: body.user[0].name,
     asyncAlready: "0",
@@ -150,14 +164,25 @@ export const addDetailSale = async (
 
     let newCount = rdsCount + 1;
 
+    await set(currentDate, newCount);
+
+    let stationNo = await get("stationNo");
+    let stationId = await get("stationId");
+
+    if (!stationId || !stationNo) {
+      const user = await getUser({});
+      stationNo = user[0].stationNo;
+      stationId = user[0].stationId;
+    }
+
     const lastDocument = await detailSaleModel
       .findOne({ nozzleNo: body.nozzleNo })
       .sort({ _id: -1, createAt: -1 });
 
     body = {
       ...body,
-      vocono: `${body.user.stationNo}/${body.user.name}/${cuurentDateForVocono}/${newCount}`,
-      stationDetailId: body.user.stationId,
+      vocono: `${stationNo}/${body.user.name}/${cuurentDateForVocono}/${newCount}`,
+      stationDetailId: stationId,
       casherCode: body.user.name,
       asyncAlready: "0",
       totalizer_liter: lastDocument?.totalizer_liter,
@@ -477,9 +502,20 @@ export const addDetailSaleByAp = async (depNo: string, nozzleNo: string) => {
     let iso: Date = new Date(`${currentDate}T${currentDateTime}.000Z`);
 
     // get today count
-    const count = await detailSaleModel.countDocuments({
-      dailyReportDate: currentDate,
-    });
+    // const count = await detailSaleModel.countDocuments({
+    //   dailyReportDate: currentDate,
+    // });
+
+    let rdsCount: number = await get(currentDate);
+    if (!rdsCount) {
+      rdsCount = await detailSaleModel.countDocuments({
+        dailyReportDate: currentDate,
+      });
+    }
+
+    let newCount = rdsCount + 1;
+
+    await set(currentDate, newCount);
 
     let stationNo = await get("stationNo");
     let stationId = await get("stationId");
@@ -503,7 +539,7 @@ export const addDetailSaleByAp = async (depNo: string, nozzleNo: string) => {
       fuelType: lastDocument?.fuelType,
       couObjId: null,
       device: "auto_permit",
-      vocono: `${stationNo}/Ca/${cuurentDateForVocono}/${count + 1}`,
+      vocono: `${stationNo}/Ca/${cuurentDateForVocono}/${newCount}`,
       stationDetailId: stationId,
       casherCode: "Ca",
       asyncAlready: "a0",
