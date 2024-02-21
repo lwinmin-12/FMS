@@ -78,10 +78,10 @@ userRoute.get(
 //adding role in user
 userRoute.patch(
   "/add/role",
-  validateToken2,
-  validateAll(userRoleSchema),
-  roleValidator(["admin", "installer"]),
-  hasAnyPermit(["add"]),
+  // validateToken2,
+  // validateAll(userRoleSchema),
+  // roleValidator(["admin", "installer"]),
+  // hasAnyPermit(["add"]),
   userAddRoleHandler
 );
 
@@ -97,10 +97,10 @@ userRoute.patch(
 //adding permit in user
 userRoute.patch(
   "/add/permit",
-  validateToken2,
-  validateAll(userPermitSchema),
-  roleValidator(["admin", "installer"]),
-  hasAnyPermit(["add"]),
+  // validateToken2,
+  // validateAll(userPermitSchema),
+  // roleValidator(["admin", "installer"]),
+  // hasAnyPermit(["add"]),
   userAddPermitHandler
 );
 

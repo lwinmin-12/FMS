@@ -29,10 +29,11 @@ export const validateToken = async (
       return next(new Error("invalid token"));
     }
     let decoded = checkToken(token);
+
     // let user = await getUser({ _id: decoded._id });
     let user = await get(decoded._id);
     if (!user) {
-      return next(new Error("invalid token"));
+      return next(new Error("invalid token 2"));
     }
     req.body = req.body || {};
     req.body.user = user;

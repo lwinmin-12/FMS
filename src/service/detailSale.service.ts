@@ -84,9 +84,9 @@ export const preSetDetailSale = async (
 
   body = {
     ...body,
-    vocono: `${stationNo}/${body.user[0].name}/${cuurentDateForVocono}/${newCount}`,
-    stationDetailId: body.user[0].stationId,
-    casherCode: body.user[0].name,
+    vocono: `${stationNo}/${body.user.name}/${cuurentDateForVocono}/${newCount}`,
+    stationDetailId: stationId,
+    casherCode: body.user.name,
     asyncAlready: "0",
     totalizer_liter: lastDocument?.totalizer_liter,
     totalizer_amount: lastDocument?.totalizer_amount,

@@ -34,7 +34,7 @@ export const loginUser = async ({
   userObj["token"] = createToken(userObj);
 
   delete userObj.password;
-  set(userObj._id, userObj);
+  set(user._id, userObj);
   set("stationNo", userObj.stationNo);
   set("stationId", userObj.stationId);
   return userObj;
