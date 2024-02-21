@@ -106,7 +106,7 @@ detailSaleRoute.post(
 );
 
 //new fms update
-detailSaleRoute.get("/total_statement", detailSaleStatementHandler);
-detailSaleRoute.patch("/customer_card", detailSaleUpdateByCard);
+detailSaleRoute.get("/total_statement",validateToken, detailSaleStatementHandler);
+detailSaleRoute.patch("/customer_card",validateToken, detailSaleUpdateByCard);
 
 export default detailSaleRoute;
