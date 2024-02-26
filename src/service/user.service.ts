@@ -47,6 +47,7 @@ export const cardAuth = async (cardId: string): Promise<{ token: string }> => {
   delete userObj.password;
   set("stationNo", userObj.stationNo);
   set("stationId", userObj.stationId);
+  set(user._id, userObj);
   const userToken = createToken(userObj);
   return { token: userToken };
 };
