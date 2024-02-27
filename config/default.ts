@@ -7,7 +7,6 @@ export default {
   page_limit: 50,
   // mqttUrl: "ws://127.0.0.1:9001",
   mqttUrl: "mqtt://127.0.0.1:1883",
-
   mqttUserName: "detpos",
   mqttPassword: "asdffdsa",
   wsServerUrl: "http://13.251.206.31:9000/api/change-mode",
