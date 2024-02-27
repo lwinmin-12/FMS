@@ -1,16 +1,16 @@
-export default {
-  port: 9000,
-  host: "localhost",
-  dbUrl: "mongodb://127.0.0.1:27017/local-pos",
-  saltWorkFactor: 10,
-  secretKey: "suuhh",
-  page_limit: 50,
-  // mqttUrl: "ws://127.0.0.1:9001",
-  mqttUrl: "mqtt://127.0.0.1:1883",
+import "dotenv/config";
 
-  mqttUserName: "detpos",
-  mqttPassword: "asdffdsa",
-  wsServerUrl: "http://13.251.206.31:9000/api/change-mode",
+export default {
+  port: process.env.PORT,
+  host: process.env.HOST,
+  dbUrl: process.env.DBURL,
+  saltWorkFactor: process.env.SALTWORKFACTOR,
+  secretKey: process.env.SECRETKEY,
+  page_limit: process.env.PAGELIMIT,
+  mqttUrl: process.env.MQTTURL,
+  mqttUserName: process.env.MQTTUSERNAME,
+  mqttPassword: process.env.MQTTPASSWORD,
+  wsServerUrl: process.env.WSSERVERURL,
   // detailsaleCloudUrl: "https://detfsmm.com/api/detail-sale",
   //coustomerCloudUrl: "http://detfsmm.com:9000/api/customer",
   // coustomerCloudUrl: "https://detfsmm.com/api/customer/local-create",
