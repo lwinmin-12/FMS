@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { connectingFunction } from "../connection/device.connection";
 import fMsg, { mqttEmitter } from "../utils/helper";
 import { sub_topic } from "../utils/connect";
-import { calcFuelBalance } from "../service/fuelBalance.service";
+// import { calcFuelBalance } from "../service/fuelBalance.service";
 
 export const connectDeviceHandler = async (
   req: Request,
