@@ -10,7 +10,7 @@ export interface balanceStatementDocument extends mongoose.Document {
   balance: number;
   todayTank: number;
   yesterdayTank: number;
-  totalIssue: number;
+  tankIssue: number;
   todayGL: number;
   totalGL: number;
 }
@@ -29,7 +29,7 @@ const balanceStatementSchema = new Schema({
   balance: { type: Number, required: true },
   todayTank: { type: Number, required: true, default: 0 },
   yesterdayTank: { type: Number, required: true },
-  totalIssue: { type: Number, required: true, default: 0 },
+  tankIssue: { type: Number, required: true, default: 0 },
   todayGL: { type: Number, required: true },
   totalGL: { type: Number, required: true },
 });
@@ -39,4 +39,4 @@ const balanceStatementModel = mongoose.model<balanceStatementDocument>(
   balanceStatementSchema
 );
 
-export default balanceStatementModel
+export default balanceStatementModel;
