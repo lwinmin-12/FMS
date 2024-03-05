@@ -8,8 +8,8 @@ import axios from "axios";
 
 import { deviceLiveData } from "../connection/liveTimeData";
 
-import { addDailyReport, getDailyReport } from "./dailyReport.service";
 import { getUser } from "./user.service";
+import { updateTotalBalanceIssue } from "./balanceStatement.service";
 
 interface Data {
   nozzleNo: string;
@@ -94,39 +94,19 @@ export const preSetDetailSale = async (
     createAt: iso,
   };
 
-  // const lastDocument = await detailSaleModel
-  //   .findOne({ nozzleNo: body.nozzleNo })
-  //   .sort({ _id: -1, createAt: -1 });
-
-  // if (
-  //   lastDocument?.saleLiter == 0 ||
-  //   lastDocument?.vehicleType == null ||
-  //   lastDocument?.totalPrice == 0
-  // ) {
-  //   throw new Error(`${lastDocument?.vocono}`);
-  // }
-
-  // if (
-  //   lastDocument?.saleLiter == 0 &&
-  //   lastDocument?.asyncAlready == "0"
-  // ) {
-  //   // throw new Error(`${lastDocument?.vocono}`);
-  //   await detailSaleModel.findByIdAndDelete(lastDocument?._id);
-  // }
-
   let result = await new detailSaleModel(body).save();
 
-  let checkRpDate = await getDailyReport({
-    stationId: result.stationDetailId,
-    dateOfDay: result.dailyReportDate,
-  });
+  // let checkRpDate = await getDailyReport({
+  //   stationId: result.stationDetailId,
+  //   dateOfDay: result.dailyReportDate,
+  // });
 
-  if (checkRpDate.length == 0) {
-    await addDailyReport({
-      stationId: result.stationDetailId,
-      dateOfDay: result.dailyReportDate,
-    });
-  }
+  // if (checkRpDate.length == 0) {
+  //   await addDailyReport({
+  //     stationId: result.stationDetailId,
+  //     dateOfDay: result.dailyReportDate,
+  //   });
+  // }
 
   mqttEmitter(`detpos/local_server/preset`, nozzleNo + type + preset);
   return result;
@@ -192,17 +172,17 @@ export const addDetailSale = async (
 
     let result = await new detailSaleModel(body).save();
 
-    let checkRpDate = await getDailyReport({
-      stationId: result.stationDetailId,
-      dateOfDay: result.dailyReportDate,
-    });
+    // let checkRpDate = await getDailyReport({
+    //   stationId: result.stationDetailId,
+    //   dateOfDay: result.dailyReportDate,
+    // });
 
-    if (checkRpDate.length == 0) {
-      await addDailyReport({
-        stationId: result.stationDetailId,
-        dateOfDay: result.dailyReportDate,
-      });
-    }
+    // if (checkRpDate.length == 0) {
+    //   await addDailyReport({
+    //     stationId: result.stationDetailId,
+    //     dateOfDay: result.dailyReportDate,
+    //   });
+    // }
 
     mqttEmitter(`detpos/local_server/${depNo}`, nozzleNo + "appro");
 
@@ -304,16 +284,21 @@ export const detailSaleUpdateByDevice = async (topic: string, message) => {
       throw new Error("Final send in error");
     }
 
-    let checkRpDate = await getDailyReport({
-      stationId: result.stationDetailId,
-      dateOfDay: result.dailyReportDate,
-    });
-    if (checkRpDate.length == 0) {
-      await addDailyReport({
-        stationId: result.stationDetailId,
-        dateOfDay: result.dailyReportDate,
-      });
-    }
+    await updateTotalBalanceIssue(
+      { fuelType: result.fuelType, dateOfDay: result.dailyReportDate },
+      result.saleLiter
+    );
+
+    // let checkRpDate = await getDailyReport({
+    //   stationId: result.stationDetailId,
+    //   dateOfDay: result.dailyReportDate,
+    // });
+    // if (checkRpDate.length == 0) {
+    //   await addDailyReport({
+    //     stationId: result.stationDetailId,
+    //     dateOfDay: result.dailyReportDate,
+    //   });
+    // }
 
     mqttEmitter("detpos/local_server", `${result?.nozzleNo}/D1S1`);
 

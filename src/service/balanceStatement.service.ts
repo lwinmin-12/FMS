@@ -41,7 +41,7 @@ export const autoAddTotalBalance = async (todayDate: string) => {
 };
 
 // for updating in detail sale
-export const updateIssue = async (
+export const updateTotalBalanceIssue = async (
   query: FilterQuery<balanceStatementDocument>,
   issue: number
 ) => {
@@ -60,7 +60,7 @@ export const updateIssue = async (
   return await balanceStatementModel.find(query);
 };
 
-export const updateReceive = async (id: string, receiveAmount: number) => {
+export const updateTotalBalanceReceive = async (id: string, receiveAmount: number) => {
   let data = await balanceStatementModel.findById(id);
   if (!data) throw new Error("Not Work");
 
@@ -77,7 +77,7 @@ export const updateReceive = async (id: string, receiveAmount: number) => {
   return await balanceStatementModel.findById(id);
 };
 
-export const updateAdjust = async (id: string, adjustAmount: number) => {
+export const updateTotalBalanceAdjust = async (id: string, adjustAmount: number) => {
   let data = await balanceStatementModel.findById(id);
   if (!data) throw new Error("Not Work");
   let balance = data.openingBalance + data.receive + adjustAmount - data.issue;
@@ -93,7 +93,7 @@ export const updateAdjust = async (id: string, adjustAmount: number) => {
   return await balanceStatementModel.findById(id);
 };
 
-export const updateToday = async (id: string, todayTankAmount: number) => {
+export const updateTotalBalanceToday = async (id: string, todayTankAmount: number) => {
   let data = await balanceStatementModel.findById(id);
   if (!data) throw new Error("Not work");
 
