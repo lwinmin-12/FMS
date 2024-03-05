@@ -626,9 +626,6 @@ export const updateDetailSaleByAp = async (
   }
 };
 
-// customer card updated for carNo and vehicle
-export const updateDetailSaleByCusCard = async () => {};
-
 export const getLastDetailSaleData = async (
   nozzleNo: string
 ): Promise<detailSaleDocument | null> => {

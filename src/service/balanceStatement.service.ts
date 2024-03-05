@@ -21,26 +21,6 @@ export const deleteTotalBalance = async (
   return await balanceStatementModel.deleteMany(query);
 };
 
-// export const updateTotalBalance = async (
-//   // query: FilterQuery<balanceStatementDocument>,
-//   id: string,
-//   body: UpdateQuery<balanceStatementDocument>
-// ) => {
-//   let resultData = await balanceStatementModel.findById(id);
-
-//   if (!resultData) throw new Error("Invalid data");
-
-//   let updateData = {
-//     ...resultData,
-//     issue: body.issue ? resultData.issue + body.issue : body.issue,
-//     adjust: body.adjust ? body.adjust : resultData.adjust,
-//     balance : body.balance? resultData.openingBalance + body.receive - (body.issue? resultData.issue + body.issue : resultData)
-//   };
-
-//   await balanceStatementModel.updateMany(query, body);
-//   return await balanceStatementModel.find(query).lean();
-// };
-
 export const autoAddTotalBalance = async (todayDate: string) => {
   let todayData = await balanceStatementModel.find({ dateOfDay: todayDate });
   if (todayData.length > 0) throw new Error("data already exists");
@@ -68,12 +48,69 @@ export const updateIssue = async (
   let result = await balanceStatementModel.find(query);
   if (result.length < 1) throw new Error("Not work");
   let data = result[0];
+  let balance = data.openingBalance - data.issue + issue;
   let updateData = {
     ...data,
     issue: data.issue + issue,
-    balance: data.balance - issue,
+    balance: balance,
     todayGL: data.issue + issue - data.tankIssue,
+    totalGL: data.todayTank - balance,
   };
   await balanceStatementModel.updateMany(query, updateData);
   return await balanceStatementModel.find(query);
 };
+
+export const updateReceive = async (id: string, receiveAmount: number) => {
+  let data = await balanceStatementModel.findById(id);
+  if (!data) throw new Error("Not Work");
+
+  let balance = data.balance + receiveAmount;
+
+  let updateData = {
+    ...data,
+    receive: receiveAmount,
+    balance: balance,
+    totalGl: data.todayTank - balance,
+  };
+
+  await balanceStatementModel.findByIdAndUpdate(id, updateData);
+  return await balanceStatementModel.findById(id);
+};
+
+export const updateAdjust = async (id: string, adjustAmount: number) => {
+  let data = await balanceStatementModel.findById(id);
+  if (!data) throw new Error("Not Work");
+  let balance = data.openingBalance + data.receive + adjustAmount - data.issue;
+
+  let updateData = {
+    ...data,
+    adjust: adjustAmount,
+    balance: balance,
+    totalGl: data.todayTank - balance,
+  };
+
+  await balanceStatementModel.findByIdAndUpdate(id, updateData);
+  return await balanceStatementModel.findById(id);
+};
+
+export const updateToday = async (id: string, todayTankAmount: number) => {
+  let data = await balanceStatementModel.findById(id);
+  if (!data) throw new Error("Not work");
+
+  let tankIssue = data.yesterdayTank - todayTankAmount;
+
+  let updateData = {
+    ...data,
+    todayTank: todayTankAmount,
+    tankIssue: tankIssue,
+    todayGl: tankIssue - data.issue,
+    totalGl: todayTankAmount - data.balance,
+  };
+  await balanceStatementModel.findByIdAndUpdate(id, updateData);
+  return await balanceStatementModel.findById(id);
+};
+
+// opening + receive + adjust - issue = balance
+// yesterdayTank - todayTank = tankIssue
+// tankIssue - issue = todayGl
+// todayTank - balance = totalGl

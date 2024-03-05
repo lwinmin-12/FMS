@@ -19,7 +19,6 @@ import {
 
 import { deviceLiveData } from "../connection/liveTimeData";
 import { getCustomerByCardId } from "../service/customer.service";
-import { customerDocument } from "../model/customer.model";
 
 export const getDetailSaleHandler = async (
   req: Request,
@@ -297,7 +296,7 @@ export const detailSaleUpdateByCard = async (
 
     let result = await updateDetailSale({ _id: lastData._id }, lastData);
 
-    fMsg(res, "card attched sussful");
+    fMsg(res, "card attched successful");
   } catch (e) {
     next(e);
   }
