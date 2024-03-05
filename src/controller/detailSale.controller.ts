@@ -19,7 +19,10 @@ import {
 
 import { deviceLiveData } from "../connection/liveTimeData";
 import { getCustomerByCardId } from "../service/customer.service";
-import { customerDocument } from "../model/customer.model";
+import {
+  autoAddTotalBalance,
+  getTotalBalance,
+} from "../service/balanceStatement.service";
 
 export const getDetailSaleHandler = async (
   req: Request,
@@ -90,6 +93,13 @@ export const preSetDetailSaleHandler = async (
       result = await preSetDetailSale(depNo, nozzleNo, newLiter, "L", req.body);
     }
 
+    let balanceStatementData = await getTotalBalance({
+      dateOfDay: result.dailyReportDate,
+    });
+
+    if (balanceStatementData.length < 1) {
+      await autoAddTotalBalance(result.dailyReportDate);
+    }
     // that is save in data base
 
     fMsg(res, "New DetailSale data was added", result);
@@ -114,6 +124,14 @@ export const addDetailSaleHandler = async (
     // if()
     // that is save in data base
     let result = await addDetailSale(depNo, nozzleNo, req.body);
+
+    let balanceStatementData = await getTotalBalance({
+      dateOfDay: result.dailyReportDate,
+    });
+
+    if (balanceStatementData.length < 1) {
+      await autoAddTotalBalance(result.dailyReportDate);
+    }
 
     fMsg(res, "New DetailSale data was added", result);
   } catch (e) {
@@ -297,7 +315,7 @@ export const detailSaleUpdateByCard = async (
 
     let result = await updateDetailSale({ _id: lastData._id }, lastData);
 
-    fMsg(res, "card attched sussful");
+    fMsg(res, "card attched successful");
   } catch (e) {
     next(e);
   }
