@@ -2,12 +2,15 @@ import {
   addAdjustBalanceHandler,
   addReciveBalanceHandler,
   addTodayBalanceHandler,
+  addTotalBalanceHandler,
   getStatementBalanceHandler,
 } from "../controller/balanceStatement.controller";
 
 const balanceStatementRoute = require("express").Router();
 
 balanceStatementRoute.get("/", getStatementBalanceHandler);
+
+balanceStatementRoute.post("/", addTotalBalanceHandler);
 
 balanceStatementRoute.post("/recive-balance", addReciveBalanceHandler);
 

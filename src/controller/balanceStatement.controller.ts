@@ -1,11 +1,25 @@
 import { Request, Response, NextFunction } from "express";
 import fMsg from "../utils/helper";
 import {
+  addTotalBalance,
   getTotalBalance,
   updateTotalBalanceAdjust,
   updateTotalBalanceReceive,
   updateTotalBalanceToday,
 } from "../service/balanceStatement.service";
+
+export const addTotalBalanceHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let result = await addTotalBalance(req.body);
+    fMsg(res, "balance statement added", result);
+  } catch (e) {
+    next(e);
+  }
+};
 
 export const getStatementBalanceHandler = async (
   req: Request,
