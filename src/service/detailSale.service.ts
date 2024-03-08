@@ -9,7 +9,10 @@ import axios from "axios";
 import { deviceLiveData } from "../connection/liveTimeData";
 
 import { getUser } from "./user.service";
-import { updateTotalBalanceIssue } from "./balanceStatement.service";
+import {
+  autoAddTotalBalance,
+  updateTotalBalanceIssue,
+} from "./balanceStatement.service";
 
 interface Data {
   nozzleNo: string;
@@ -140,6 +143,7 @@ export const addDetailSale = async (
       rdsCount = await detailSaleModel.countDocuments({
         dailyReportDate: currentDate,
       });
+      if (rdsCount == 0) await autoAddTotalBalance(currentDate);
     }
 
     let newCount = rdsCount + 1;
@@ -283,6 +287,8 @@ export const detailSaleUpdateByDevice = async (topic: string, message) => {
     if (!result) {
       throw new Error("Final send in error");
     }
+
+    // console.log(result.fuelType  , result.dailyReportDate)
 
     await updateTotalBalanceIssue(
       { fuelType: result.fuelType, dateOfDay: result.dailyReportDate },
@@ -539,7 +545,7 @@ export const addDetailSaleByAp = async (depNo: string, nozzleNo: string) => {
 
     return result;
   } catch (e) {
-    console.log("e in service");
+    // console.log("e in service");
     throw new Error(e);
   }
 };

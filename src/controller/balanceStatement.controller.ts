@@ -28,6 +28,7 @@ export const getStatementBalanceHandler = async (
 ) => {
   try {
     let reqDate = req.query.reqDate as string;
+    if (!reqDate) throw new Error("req date is require");
     let result = await getTotalBalance({ dateOfDay: reqDate });
     fMsg(res, "Balance Statement", result);
   } catch (e) {
@@ -42,7 +43,7 @@ export const addReciveBalanceHandler = async (
 ) => {
   try {
     const id = req.query.id as string;
-    const receiveAmount = req.body.receiveAmount;
+    const receiveAmount = Number(req.body.receiveAmount);
     if (!id || !receiveAmount) throw new Error("Bad request");
     await updateTotalBalanceReceive(id, receiveAmount);
     fMsg(res, "receive data was added");
@@ -58,7 +59,7 @@ export const addAdjustBalanceHandler = async (
 ) => {
   try {
     const id = req.query.id as string;
-    const adjustAmount = req.body.adjustAmount;
+    const adjustAmount = Number(req.body.adjustAmount);
     if (!id || !adjustAmount) throw new Error("Bad request");
     await updateTotalBalanceAdjust(id, adjustAmount);
     fMsg(res, "adjust data was added");
@@ -74,7 +75,7 @@ export const addTodayBalanceHandler = async (
 ) => {
   try {
     const id = req.query.id as string;
-    const todayTankAmount = req.body.todayTankAmount;
+    const todayTankAmount = Number(req.body.todayTankAmount);
     if (!id || !todayTankAmount) throw new Error("Bad request");
     await updateTotalBalanceToday(id, todayTankAmount);
     fMsg(res, "today tank  data was added");

@@ -46,8 +46,9 @@ export const updateTotalBalanceIssue = async (
   issue: number
 ) => {
   let result = await balanceStatementModel.find(query);
+  console.log(result);
   if (result.length < 1) throw new Error("Not work");
-  let data = result[0];
+  let data = result[0].toObject();
   let balance = data.openingBalance - data.issue + issue;
   let updateData = {
     ...data,
@@ -60,57 +61,70 @@ export const updateTotalBalanceIssue = async (
   return await balanceStatementModel.find(query);
 };
 
-export const updateTotalBalanceReceive = async (id: string, receiveAmount: number) => {
+export const updateTotalBalanceReceive = async (
+  id: string,
+  receiveAmount: number
+) => {
   let data = await balanceStatementModel.findById(id);
   if (!data) throw new Error("Not Work");
 
   let balance = data.balance + receiveAmount;
-
+  console.log(typeof receiveAmount);
   let updateData = {
-    ...data,
+    ...data.toObject(),
     receive: receiveAmount,
     balance: balance,
-    totalGl: data.todayTank - balance,
+    totalGL: data.todayTank - balance,
   };
+
+  // console.log(updateData);
 
   await balanceStatementModel.findByIdAndUpdate(id, updateData);
   return await balanceStatementModel.findById(id);
 };
 
-export const updateTotalBalanceAdjust = async (id: string, adjustAmount: number) => {
+export const updateTotalBalanceAdjust = async (
+  id: string,
+  adjustAmount: number
+) => {
   let data = await balanceStatementModel.findById(id);
   if (!data) throw new Error("Not Work");
   let balance = data.openingBalance + data.receive + adjustAmount - data.issue;
 
   let updateData = {
-    ...data,
+    ...data.toObject(),
     adjust: adjustAmount,
     balance: balance,
-    totalGl: data.todayTank - balance,
+    totalGL: data.todayTank - balance,
   };
+  console.log(updateData);
 
   await balanceStatementModel.findByIdAndUpdate(id, updateData);
   return await balanceStatementModel.findById(id);
 };
 
-export const updateTotalBalanceToday = async (id: string, todayTankAmount: number) => {
+export const updateTotalBalanceToday = async (
+  id: string,
+  todayTankAmount: number
+) => {
   let data = await balanceStatementModel.findById(id);
   if (!data) throw new Error("Not work");
 
   let tankIssue = data.yesterdayTank - todayTankAmount;
 
   let updateData = {
-    ...data,
+    ...data.toObject(),
     todayTank: todayTankAmount,
     tankIssue: tankIssue,
-    todayGl: tankIssue - data.issue,
-    totalGl: todayTankAmount - data.balance,
+    todayGL: tankIssue - data.issue,
+    totalGL: todayTankAmount - data.balance,
   };
+  console.log(updateData);
   await balanceStatementModel.findByIdAndUpdate(id, updateData);
   return await balanceStatementModel.findById(id);
 };
 
 // opening + receive + adjust - issue = balance
 // yesterdayTank - todayTank = tankIssue
-// tankIssue - issue = todayGl
-// todayTank - balance = totalGl
+// tankIssue - issue = todayGL
+// todayTank - balance = totalGL

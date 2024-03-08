@@ -26,12 +26,12 @@ const balanceStatementSchema = new Schema({
   receive: { type: Number, required: true, default: 0 },
   issue: { type: Number, required: true, default: 0 },
   adjust: { type: Number, required: true, default: 0 },
-  balance: { type: Number, required: true },
+  balance: { type: Number, required: true, default: 0 },
   todayTank: { type: Number, required: true, default: 0 },
   yesterdayTank: { type: Number, required: true },
   tankIssue: { type: Number, required: true, default: 0 },
-  todayGL: { type: Number, required: true },
-  totalGL: { type: Number, required: true },
+  todayGL: { type: Number, required: true, default: 0 },
+  totalGL: { type: Number, required: true, default: 0 },
 });
 
 const balanceStatementModel = mongoose.model<balanceStatementDocument>(

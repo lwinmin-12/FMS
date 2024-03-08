@@ -82,7 +82,7 @@ socket.on("connect", async () => {
   // Send data to the Raspberry Pi server
   socket.emit("checkMode", stationId);
 
-  console.log(stationId);
+  // console.log(stationId);
 
   socket.on(stationId, async (data) => {
     let result = await systemStatusUpdate(data.mode);
