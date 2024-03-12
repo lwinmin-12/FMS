@@ -129,7 +129,9 @@ export const addDetailSaleHandler = async (
       dateOfDay: result.dailyReportDate,
     });
 
-    if (balanceStatementData.length < 1) {
+    // console.log(balanceStatementData);
+
+    if (balanceStatementData.length == 0) {
       await autoAddTotalBalance(result.dailyReportDate);
     }
 

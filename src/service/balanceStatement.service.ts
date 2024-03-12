@@ -35,6 +35,7 @@ export const autoAddTotalBalance = async (todayDate: string) => {
       fuelType: ea.fuelType,
       openingBalance: ea.balance,
       yesterdayTank: ea.todayTank,
+      balance: ea.balance,
     };
     await new balanceStatementModel(newData).save();
   });
@@ -46,7 +47,7 @@ export const updateTotalBalanceIssue = async (
   issue: number
 ) => {
   let result = await balanceStatementModel.find(query);
-  console.log(result);
+  // console.log(result);
   if (result.length < 1) throw new Error("Not work");
   let data = result[0].toObject();
   let balance = data.openingBalance - data.issue + issue;
