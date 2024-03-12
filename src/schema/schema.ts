@@ -192,19 +192,11 @@ export const detailSaleErrorUpdateSchema = object({
 
 export const fuelInSchema = object({
   body: object({
-    // stationId: string({
-    //   required_error: "you need stationId",
-    // }).regex(/^[0-9a-fA-F]{24}$/, "invlid id"),
-
     driver: string({
       required_error: "you need add driver",
     }),
 
     bowser: string({
-      required_error: "you need add driver",
-    }),
-
-    tankNo: string({
       required_error: "you need add driver",
     }),
 
@@ -247,3 +239,55 @@ export const fuelBalanceSchema = object({
     // ),
   }),
 });
+
+export const fuelReciveSchema = object({
+  query: object({
+    id: string({
+      required_error: "no data with that id",
+    }).regex(/^[0-9a-fA-F]{24}$/, "invlid id"),
+  }),
+
+  body: object({
+    receiveAmount: string({
+      required_error: "you need add receiveAmount",
+    }),
+
+    driver: string({
+      required_error: "you need add driver",
+    }),
+
+    bowser: string({
+      required_error: "you need add bowser",
+    }),
+
+    fuel_type: string({
+      required_error: "you need add fuel_type",
+    }),
+  }),
+});
+
+export const fuelAdjustSchema = object({
+  query: object({
+    id: string({
+      required_error: "no data with that id",
+    }).regex(/^[0-9a-fA-F]{24}$/, "invlid id"),
+  }),
+  body : object({
+    adjustAmount: string({
+      required_error: "you need add adjust Amount",
+    }),
+  })
+})
+
+export const todayBalanceSchema = object({
+  query: object({
+    id: string({
+      required_error: "no data with that id",
+    }).regex(/^[0-9a-fA-F]{24}$/, "invlid id"),
+  }),
+  body : object({
+    todayTankAmount: string({
+      required_error: "you need add adjust Amount",
+    }),
+  })
+})

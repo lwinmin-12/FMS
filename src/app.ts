@@ -24,6 +24,7 @@ import {
 import customerRoute from "./router/customer.routes";
 import totalStatementRoute from "./router/totalStatement.routes";
 import balanceStatementRoute from "./router/balanceStatement.routes";
+import fuelInRoute from "./router/fuelIn.routes";
 
 const app = express();
 app.use(fileUpload());
@@ -114,6 +115,7 @@ app.use("/api/daily-price", dailyPriceRoute); // daily price route
 app.use("/api/customer", customerRoute);
 app.use("/api/total-statement", totalStatementRoute);
 app.use("/api/balance-statement", balanceStatementRoute);
+app.use("/api/fuelIn", fuelInRoute);
 
 // error handling and response
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

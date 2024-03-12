@@ -7,6 +7,7 @@ import {
   updateTotalBalanceReceive,
   updateTotalBalanceToday,
 } from "../service/balanceStatement.service";
+import { addFuelIn } from "../service/fuelIn.service";
 
 export const addTotalBalanceHandler = async (
   req: Request,
@@ -44,8 +45,12 @@ export const addReciveBalanceHandler = async (
   try {
     const id = req.query.id as string;
     const receiveAmount = Number(req.body.receiveAmount);
+
     if (!id || !receiveAmount) throw new Error("Bad request");
+    
     await updateTotalBalanceReceive(id, receiveAmount);
+    await addFuelIn(req.body);
+
     fMsg(res, "receive data was added");
   } catch (e) {
     next(e);
