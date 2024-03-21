@@ -66,6 +66,7 @@ export const preSetDetailSale = async (
     rdsCount = await detailSaleModel.countDocuments({
       dailyReportDate: currentDate,
     });
+    if (rdsCount == 0) await autoAddTotalBalance(currentDate);
   }
 
   let newCount = rdsCount + 1;
@@ -349,6 +350,7 @@ export const detailSaleUpdateByDevice = async (topic: string, message) => {
           break;
         }
       } catch (error) {
+        console.log(error);
         if (error.response && error.response.status === 409) {
         } else {
         }

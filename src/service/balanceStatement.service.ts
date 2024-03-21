@@ -23,12 +23,11 @@ export const deleteTotalBalance = async (
 
 export const autoAddTotalBalance = async (todayDate: string) => {
   let todayData = await balanceStatementModel.find({ dateOfDay: todayDate });
-  if (todayData.length > 0) throw new Error("data already exists");
+  if (todayData.length > 0) return {};
 
   let prevDate = previous();
   let prevData = await balanceStatementModel.find({ dateOfDay: prevDate });
-
-  if (prevData.length < 1) throw new Error("can't create");
+  if (prevData.length < 1) return {};
 
   prevData.map(async (ea) => {
     let newData = {
@@ -36,6 +35,7 @@ export const autoAddTotalBalance = async (todayDate: string) => {
       openingBalance: ea.balance,
       yesterdayTank: ea.todayTank,
       balance: ea.balance,
+      dateOfDay: todayData,
     };
     await new balanceStatementModel(newData).save();
   });
