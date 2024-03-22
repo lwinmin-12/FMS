@@ -35,7 +35,7 @@ export const autoAddTotalBalance = async (todayDate: string) => {
       openingBalance: ea.balance,
       yesterdayTank: ea.todayTank,
       balance: ea.balance,
-      dateOfDay: todayData,
+      dateOfDay: todayDate,
     };
     await new balanceStatementModel(newData).save();
   });
