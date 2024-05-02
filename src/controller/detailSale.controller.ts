@@ -121,8 +121,6 @@ export const addDetailSaleHandler = async (
       throw new Error("you need pumpNo or message");
     }
 
-    // if()
-    // that is save in data base
     let result = await addDetailSale(depNo, nozzleNo, req.body);
 
     let balanceStatementData = await getTotalBalance({

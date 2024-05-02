@@ -50,7 +50,7 @@ export const updateTotalBalanceIssue = async (
   // console.log(result);
   if (result.length < 1) throw new Error("Not work");
   let data = result[0].toObject();
-  let balance = data.openingBalance - data.issue + issue;
+  let balance = data.openingBalance - (data.issue + issue);
   let updateData = {
     ...data,
     issue: data.issue + issue,
